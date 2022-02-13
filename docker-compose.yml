@@ -1,0 +1,28 @@
+version: "3.5"
+
+networks:
+    application:
+        name: application
+
+services:
+    web:
+        image: bref/fpm-dev-gateway
+        container_name: web
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/task
+        links:
+            - php
+        environment:
+            HANDLER: public/index.php
+            DOCUMENT_ROOT: public
+        networks:
+            - application
+    php:
+        image: bref/php-81-fpm-dev
+        container_name: php
+        volumes:
+            - .:/var/task:ro
+        networks:
+            - application
