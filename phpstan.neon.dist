@@ -1,0 +1,8 @@
+parameters:
+  fileExtensions:
+    - php
+  checkGenericClassInNonGenericObjectType: false
+  checkMissingIterableValueType: false
+  level: 5
+  paths:
+    - src/
