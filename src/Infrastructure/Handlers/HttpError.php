@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Handlers;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpBadRequestException;
 use Slim\Exception\HttpException;
@@ -13,8 +14,11 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
-use Exception;
 use Throwable;
+
+use function json_encode;
+
+use const JSON_PRETTY_PRINT;
 
 class HttpError extends ErrorHandler
 {
