@@ -1,0 +1,77 @@
+openapi: '3.0.2'
+info:
+    title: Example Name Project
+    description: |
+       Example description project.
+
+    contact:
+        name: Autodoc Support
+        url: https://autodoc.com.br
+        email: infra@autodoc.com.br
+    version: '1.0'
+servers:
+    -
+        url: http://localhost:8080/
+        description: Server local
+    -
+        url: https://example.autodocdev.com/{basePath}
+        description: Server homolog
+        variables:
+            basePath:
+                default: v1
+    -
+        url: https://example.autodoc.com.br/{basePath}
+        description: Server production
+        variables:
+            basePath:
+                default: v1
+tags:
+    -
+        name: Example Tag
+paths:
+    /Example:
+        get:
+            tags:
+                - Example Tag
+            summary: obter uma lista de todos os arquivos
+            description: |
+                obter uma lista de todos os arquivos que estão ativados e ordenado por name
+            responses:
+                "200":
+                    description: |
+                        O status code 200 informa que a operação foi bem sucedida.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/example"
+components:
+    schemas:
+        example:
+            type: object
+            properties:
+                type:
+                    type: string
+                    example: files
+                id:
+                    type: string
+                    example: f5db27a9-20c0-4c6a-8d92-b2a09a1a90a1
+                attributes:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: example-1.pdf
+                        size:
+                            type: integer
+                            example: 1024
+                        extension:
+                            type: string
+                            example: pdf
+                        createdAt:
+                            type: string
+                            example: 2022-04-14T12:56:34+00:00
+                        deletedAt:
+                            type: string
+                            example: null
