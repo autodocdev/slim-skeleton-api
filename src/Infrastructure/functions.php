@@ -1,41 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Infrastructure;
 
-const DS = DIRECTORY_SEPARATOR;
+use function dirname;
+use function is_null;
 
-function base_path(string $path = null): string
+use const DIRECTORY_SEPARATOR;
+
+function basePath(?string $path = null): string
 {
     if (is_null($path)) {
-        return dirname(__DIR__, 2) . DS;
+        return dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
     }
 
-    return dirname(__DIR__, 2) . DS . $path . DS;
+    return dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR;
 }
 
-function config_path(string $path = null): string
+function configPath(?string $path = null): string
 {
     if (is_null($path)) {
-        base_path("config") . DS;
+        basePath('config') . DIRECTORY_SEPARATOR;
     }
 
-    return base_path("config") . DS . $path . DS;
+    return basePath('config') . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR;
 }
 
-function var_path(string $path = null): string
+function varPath(?string $path = null): string
 {
     if (is_null($path)) {
-        base_path("var") . DS;
+        basePath('var') . DIRECTORY_SEPARATOR;
     }
 
-    return base_path("var") . DS . $path . DS;
+    return basePath('var') . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR;
 }
 
-function cache_path(string $path = null): string
+function cachePath(?string $path = null): string
 {
     if (is_null($path)) {
-        var_path("cache") . DS;
+        varPath('cache') . DIRECTORY_SEPARATOR;
     }
 
-    return var_path("cache") . DS . $path . DS;
+    return varPath('cache') . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR;
 }

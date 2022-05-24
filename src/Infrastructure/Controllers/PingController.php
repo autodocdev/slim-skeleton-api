@@ -10,11 +10,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use const DATE_ATOM;
+
 final class PingController implements RequestHandlerInterface
 {
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $date = (new Datetime())->format(DATE_ATOM);
+        $date = (new DateTime())->format(DATE_ATOM);
 
         return new JsonResponse(['date' => $date]);
     }
