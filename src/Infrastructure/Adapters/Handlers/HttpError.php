@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Handlers;
+namespace Infrastructure\Adapters\Handlers;
 
 use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpBadRequestException;
@@ -13,25 +13,28 @@ use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
-use Exception;
 use Throwable;
+
+use function json_encode;
+
+use const JSON_PRETTY_PRINT;
 
 class HttpError extends ErrorHandler
 {
-    public const BAD_REQUEST = 'BAD_REQUEST';
-    public const INSUFFICIENT_PRIVILEGES = 'INSUFFICIENT_PRIVILEGES';
-    public const NOT_ALLOWED = 'NOT_ALLOWED';
-    public const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
-    public const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
-    public const SERVER_ERROR = 'SERVER_ERROR';
-    public const UNAUTHENTICATED = 'UNAUTHENTICATED';
+    public const BAD_REQUEST                = 'BAD_REQUEST';
+    public const INSUFFICIENT_PRIVILEGES    = 'INSUFFICIENT_PRIVILEGES';
+    public const NOT_ALLOWED                = 'NOT_ALLOWED';
+    public const NOT_IMPLEMENTED            = 'NOT_IMPLEMENTED';
+    public const RESOURCE_NOT_FOUND         = 'RESOURCE_NOT_FOUND';
+    public const SERVER_ERROR               = 'SERVER_ERROR';
+    public const UNAUTHENTICATED            = 'UNAUTHENTICATED';
 
     protected function respond(): ResponseInterface
     {
-        $exception = $this->exception;
-        $statusCode = 500;
-        $type = self::SERVER_ERROR;
-        $description = 'An internal error has occurred while processing your request.';
+        $exception      = $this->exception;
+        $statusCode     = 500;
+        $type           = self::SERVER_ERROR;
+        $description    = 'An internal error has occurred while processing your request.';
 
         if ($exception instanceof HttpException) {
             $statusCode = $exception->getCode();
@@ -53,9 +56,9 @@ class HttpError extends ErrorHandler
         }
 
         if (
-            !($exception instanceof HttpException)
-            && ($exception instanceof Exception || $exception instanceof Throwable)
-            && $this->displayErrorDetails
+            $this->displayErrorDetails
+            && !($exception instanceof HttpException)
+            && $exception instanceof Throwable
         ) {
             $description = $exception->getMessage();
         }
