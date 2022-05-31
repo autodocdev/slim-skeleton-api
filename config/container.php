@@ -5,24 +5,22 @@ declare(strict_types=1);
 namespace Config;
 
 use DI\ContainerBuilder;
+use Infrastructure\Factories\ConfigFactory;
+use Infrastructure\Factories\JsonResponseFactory;
+use Infrastructure\Factories\LoggerFactory;
+use Laminas\Config\Config;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
-use function Infrastructure\config_path;
-use function Infrastructure\cache_path;
+use function DI\factory;
+use function Infrastructure\Adapters\Support\configPath;
 
 $containerBuilder = new ContainerBuilder();
-$containerBuilder->addDefinitions(config_path() . 'config.php');
+$containerBuilder->addDefinitions(configPath('app.php'));
 $containerBuilder->addDefinitions([
-    \Psr\Log\LoggerInterface::class => function (): \Psr\Log\LoggerInterface {
-        $logger = new \Monolog\Logger('app');
-        $logger->pushHandler(new \Monolog\Handler\StreamHandler('php://stderr', \Monolog\Logger::NOTICE));
-
-        return $logger;
-    },
+    Config::class               => factory(ConfigFactory::class),
+    LoggerInterface::class      => factory(LoggerFactory::class),
+    ResponseInterface::class    => factory(JsonResponseFactory::class),
 ]);
-
-// Should be set to true in production
-if (false) {
-    $containerBuilder->enableCompilation(cache_path());
-}
 
 return $containerBuilder->build();
