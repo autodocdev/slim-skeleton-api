@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-use Infrastructure\Handlers\HttpError as HttpErrorHandler;
-use Infrastructure\Handlers\Shutdown as ShutdownHandler;
+use Infrastructure\Adapters\Handlers\HttpError as HttpErrorHandler;
+use Infrastructure\Adapters\Handlers\Shutdown as ShutdownHandler;
+use Laminas\Config\Config;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
-use function Infrastructure\basePath;
-use function Infrastructure\configPath;
+use function Infrastructure\Adapters\Support\basePath;
+use function Infrastructure\Adapters\Support\configPath;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,6 +19,18 @@ $dotenv->safeLoad();
 // Set that to your needs
 $displayErrorDetails = true;
 
+// Build PHP-DI Container instance
+$container = require configPath('container.php');
+$config = $container
+    ->get(Config::class)
+    ->get('config');
+
+// Set that to your needs
+$displayErrorDetails    = $config->log->display_error_details;
+$logErrors              = $config->log->log_errors;
+$logErrorsDetails       = $config->log->log_error_details;
+
+AppFactory::setContainer($container);
 $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
 $responseFactory = $app->getResponseFactory();
@@ -33,15 +46,15 @@ register_shutdown_function($shutdownHandler);
 $app->addRoutingMiddleware();
 
 // Add Error Handling Middleware
-$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
+$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logErrors, $logErrorsDetails);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Register middleware
-$middleware = require configPath() . 'middleware.php';
+$middleware = require configPath('middleware.php');
 $middleware($app);
 
 // Register routes
-$routes = require configPath() . 'routes.php';
+$routes = require configPath('routes.php');
 $routes($app);
 
 $app->run();
