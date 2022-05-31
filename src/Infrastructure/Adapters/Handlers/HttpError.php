@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Handlers;
+namespace Infrastructure\Adapters\Handlers;
 
 use Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -57,9 +57,9 @@ class HttpError extends ErrorHandler
         }
 
         if (
-            !($exception instanceof HttpException)
-            && ($exception instanceof Exception || $exception instanceof Throwable)
-            && $this->displayErrorDetails
+            $this->displayErrorDetails
+            && !($exception instanceof HttpException)
+            && $exception instanceof Throwable
         ) {
             $description = $exception->getMessage();
         }
