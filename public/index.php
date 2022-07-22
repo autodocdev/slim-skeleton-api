@@ -7,12 +7,12 @@ use Infrastructure\Handlers\Shutdown as ShutdownHandler;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
-use function Infrastructure\base_path;
-use function Infrastructure\config_path;
+use function Infrastructure\Adapters\Support\basePath;
+use function Infrastructure\Adapters\Support\configPath;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(base_path());
+$dotenv = Dotenv\Dotenv::createImmutable(basePath());
 $dotenv->safeLoad();
 
 // Set that to your needs
@@ -37,11 +37,11 @@ $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
 // Register middleware
-$middleware = require config_path() . 'middleware.php';
+$middleware = require configPath() . 'middleware.php';
 $middleware($app);
 
 // Register routes
-$routes = require config_path() . 'routes.php';
+$routes = require configPath() . 'routes.php';
 $routes($app);
 
 $app->run();

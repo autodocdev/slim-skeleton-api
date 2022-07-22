@@ -6,11 +6,11 @@ namespace Config;
 
 use DI\ContainerBuilder;
 
-use function Infrastructure\config_path;
-use function Infrastructure\cache_path;
+use function Infrastructure\Adapters\Support\cachePath;
+use function Infrastructure\Adapters\Support\configPath;
 
 $containerBuilder = new ContainerBuilder();
-$containerBuilder->addDefinitions(config_path() . 'config.php');
+$containerBuilder->addDefinitions(configPath() . 'config.php');
 $containerBuilder->addDefinitions([
     \Psr\Log\LoggerInterface::class => function (): \Psr\Log\LoggerInterface {
         $logger = new \Monolog\Logger('app');
@@ -22,7 +22,7 @@ $containerBuilder->addDefinitions([
 
 // Should be set to true in production
 if (false) {
-    $containerBuilder->enableCompilation(cache_path());
+    $containerBuilder->enableCompilation(cachePath());
 }
 
 return $containerBuilder->build();
