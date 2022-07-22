@@ -4,6 +4,14 @@ networks:
     application:
         name: application
 
+volumes:
+    mysql-data:
+        name: mysql-data
+        driver: local
+    storage-ocr:
+        name: storage-ocr
+        driver: local
+
 services:
     web:
         image: bref/fpm-dev-gateway
@@ -43,3 +51,18 @@ services:
             - "/var/run/docker.sock:/var/run/docker.sock"
         networks:
             - application
+    mysql:
+        image: mysql:5.7
+        container_name: mysql
+        # restart: always
+        ports:
+          - "3306:3306"
+        networks:
+            - application
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        volumes:
+            - mysql-data:/var/lib/mysql
